@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - KitabGhar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-8">
+            <h2>Admin Dashboard</h2>
+            <p class="text-muted">Manage users and books.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Users -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Users</strong>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Joined</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in all_users %}
+                            <tr>
+                                <td>{{ u.username }}</td>
+                                <td>{{ u.email }}</td>
+                                <td>{{ u.role }}</td>
+                                <td>{% if u.created_at %}{{ u.created_at.strftime('%Y-%m-%d') }}{% endif %}</td>
+                                <td class="text-end">
+                                    {% if u.id != user.id %}
+                                    <a href="{{ url_for('delete_user', user_id=u.id) }}" class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Delete user {{ u.username }}?')">Delete</a>
+                                    {% else %}
+                                    <span class="text-muted small">You</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Books -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Books</strong>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Category</th>
+                                <th>Downloads</th>
+                                <th>Uploaded</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for book in all_books %}
+                            <tr>
+                                <td>{{ book.title }}</td>
+                                <td>{{ book.author }}</td>
+                                <td>{{ book.category }}</td>
+                                <td>{{ book.downloads|default(0) }}</td>
+                                <td>{% if book.uploaded_at %}{{ book.uploaded_at.strftime('%Y-%m-%d') }}{% endif %}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ url_for('read', book_id=book.id) }}" target="_blank" class="btn btn-sm btn-outline-secondary" title="Read">
+                                            <i class="fas fa-book-open"></i>
+                                        </a>
+
+                                        <a href="{{ url_for('download', book_id=book.id) }}" class="btn btn-sm btn-outline-primary" title="Download">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+
+                                        <a href="{{ url_for('delete_book', book_id=book.id) }}" class="btn btn-sm btn-outline-danger"
+                                           onclick="return confirm('Delete book {{ book.title }}?')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% if not all_books %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">No books found.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Home - KitabGhar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 mb-3">
+                <i class="fas fa-book-open text-primary me-2"></i>KitabGhar
+            </h1>
+            <p class="lead text-muted">Discover, upload and read PDF books — fast and simple.</p>
+
+            {% if not user %}
+            <div class="mt-4">
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-2">
+                    <i class="fas fa-user-plus me-1"></i>Register
+                </a>
+                <a href="{{ url_for('browse') }}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-search me-1"></i>Browse Library
+                </a>
+            </div>
+            {% else %}
+            <div class="mt-4">
+                <a href="{{ url_for('browse') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-search me-1"></i>Browse Library
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-book fa-2x text-info mb-2"></i>
+                    <h3 class="mb-1">{{ total_books }}</h3>
+                    <p class="text-muted mb-0">Total eBooks</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-users fa-2x text-success mb-2"></i>
+                    <h3 class="mb-1">{{ total_users }}</h3>
+                    <p class="text-muted mb-0">Registered Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-download fa-2x text-warning mb-2"></i>
+                    {% set recent_downloads = recent_books|sum(attribute='downloads') %}
+                    <h3 class="mb-1">{{ recent_downloads }}</h3>
+                    <p class="text-muted mb-0">Recent Downloads</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recently added books -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="fas fa-clock me-2"></i>Recently Added</h2>
+        </div>
+
+        {% if recent_books %}
+            {% for book in recent_books %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-file-pdf fa-3x text-danger"></i>
+                            </div>
+                            <div class="flex-fill">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-user me-1"></i>{{ book.author }}</p>
+                                <p class="text-muted mb-1"><i class="fas fa-tag me-1"></i>{{ book.category }}</p>
+                                {% if book.uploaded_at %}
+                                <small class="text-muted"><i class="fas fa-calendar me-1"></i>{{ book.uploaded_at.strftime('%B %d, %Y') }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <p class="card-text mt-3">{{ book.description[:120] }}{% if book.description|length > 120 %}...{% endif %}</p>
+                    </div>
+
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted"><i class="fas fa-download me-1"></i>{{ book.downloads|default(0) }} downloads</small>
+
+                            {% if user %}
+                            <div>
+                                <a href="{{ url_for('read', book_id=book.id) }}" class="btn btn-sm btn-primary me-2" target="_blank">
+                                    <i class="fas fa-book-open me-1"></i>Read
+                                </a>
+                                <a href="{{ url_for('download', book_id=book.id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-download me-1"></i>Download
+                                </a>
+                            </div>
+                            {% else %}
+                            <div>
+                                <a href="{{ url_for('login') }}" class="btn btn-sm btn-primary">Login to Read</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No books added yet.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('browse') }}" class="btn btn-outline-primary btn-lg">
+            <i class="fas fa-eye me-1"></i>View All Books
+        </a>
+    </div>
+</div>
+{% endblock %}

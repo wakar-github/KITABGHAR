@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Home - KitabGhar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 mb-4">
+                <i class="fas fa-book-open text-primary me-3"></i>
+                Welcome to KitabGhar
+            </h1>
+            <p class="lead text-muted mb-4">
+                Discover, manage, and enjoy your digital book collection. Upload, browse, and download eBooks with our comprehensive library management system.
+            </p>
+            {% if not user %}
+            <div class="d-flex gap-3 justify-content-center">
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Get Started
+                </a>
+                <a href="{{ url_for('browse') }}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-search me-2"></i>Browse Library
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="row mb-5">
+        <div class="col-md-4 text-center">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-book fa-3x text-info mb-3"></i>
+                    <h3 class="card-title">{{ total_books }}</h3>
+                    <p class="card-text text-muted">Total eBooks</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-users fa-3x text-success mb-3"></i>
+                    <h3 class="card-title">{{ total_users }}</h3>
+                    <p class="card-text text-muted">Registered Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-download fa-3x text-warning mb-3"></i>
+                    <h3 class="card-title">{% set total_downloads = recent_books|sum(attribute='downloads') %}{{ total_downloads }}</h3>
+                    <p class="card-text text-muted">Total Downloads</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Books Section -->
+    {% if recent_books %}
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                <i class="fas fa-clock me-2"></i>Recently Added
+            </h2>
+            <div class="row">
+                {% for book in recent_books %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-file-pdf fa-2x text-danger"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5 class="card-title">{{ book.title }}</h5>
+                                    <p class="card-text text-muted mb-2">
+                                        <i class="fas fa-user me-1"></i>{{ book.author }}
+                                    </p>
+                                    <p class="card-text text-muted mb-2">
+                                        <i class="fas fa-tag me-1"></i>{{ book.category }}
+                                    </p>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        {{ book.uploaded_at.strftime('%B %d, %Y') }}
+                                    </small>
+                                </div>
+                            </div>
+                            <p class="card-text mt-3">{{ book.description[:100] }}{% if book.description|length > 100 %}...{% endif %}</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-download me-1"></i>{{ book.downloads }} downloads
+                                </small>
+                                {% if user %}
+                                <a href="{{ url_for('download', book_id=book.id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-download me-1"></i>Download
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-4">
+                <a href="{{ url_for('browse') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-eye me-2"></i>View All Books
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="card">
+                <div class="card-body py-5">
+                    <i class="fas fa-book-open fa-4x text-muted mb-4"></i>
+                    <h3 class="text-muted">No books available yet</h3>
+                    <p class="text-muted mb-4">Be the first to contribute to our library!</p>
+                    {% if user and user.role in ['author', 'admin'] %}
+                    <a href="{{ url_for('upload') }}" class="btn btn-primary">
+                        <i class="fas fa-upload me-2"></i>Upload First Book
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Features Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="text-center mb-5">
+                <i class="fas fa-star me-2"></i>Features
+            </h2>
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    <i class="fas fa-upload fa-3x text-primary mb-3"></i>
+                    <h4>Easy Upload</h4>
+                    <p class="text-muted">Upload PDF eBooks with metadata and categorization</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <i class="fas fa-search fa-3x text-info mb-3"></i>
+                    <h4>Smart Search</h4>
+                    <p class="text-muted">Find books by title, author, category, or description</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <i class="fas fa-users-cog fa-3x text-success mb-3"></i>
+                    <h4>Role Management</h4>
+                    <p class="text-muted">Reader, Author, and Admin roles with different permissions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

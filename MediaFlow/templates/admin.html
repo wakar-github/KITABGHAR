@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - KitabGhar{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>
+                <i class="fas fa-cog me-2"></i>Admin Dashboard
+            </h2>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-users fa-3x text-info mb-3"></i>
+                    <h3>{{ all_users|length }}</h3>
+                    <p class="text-muted">Total Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-book fa-3x text-success mb-3"></i>
+                    <h3>{{ all_books|length }}</h3>
+                    <p class="text-muted">Total Books</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-download fa-3x text-warning mb-3"></i>
+                    <h3>{% set total_downloads = all_books|sum(attribute='downloads') %}{{ total_downloads }}</h3>
+                    <p class="text-muted">Total Downloads</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" 
+                    type="button" role="tab">
+                <i class="fas fa-users me-1"></i>Users Management
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="books-tab" data-bs-toggle="tab" data-bs-target="#books" 
+                    type="button" role="tab">
+                <i class="fas fa-book me-1"></i>Books Management
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="adminTabsContent">
+        <!-- Users Management Tab -->
+        <div class="tab-pane fade show active" id="users" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-users me-2"></i>User Management
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if all_users %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user_item in all_users %}
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-user me-2"></i>{{ user_item.username }}
+                                        {% if user_item.id == user.id %}
+                                        <span class="badge bg-primary ms-1">You</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ user_item.email }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if user_item.role == 'admin' %}danger{% elif user_item.role == 'author' %}warning{% else %}secondary{% endif %}">
+                                            {{ user_item.role.title() }}
+                                        </span>
+                                    </td>
+                                    <td>{{ user_item.created_at.strftime('%b %d, %Y') }}</td>
+                                    <td>
+                                        {% if user_item.id != user.id %}
+                                        <a href="{{ url_for('delete_user', user_id=user_item.id) }}" 
+                                           class="btn btn-sm btn-outline-danger"
+                                           onclick="return confirm('Are you sure you want to delete user {{ user_item.username }}?')">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </a>
+                                        {% else %}
+                                        <span class="text-muted">Current User</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No users found</h5>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Books Management Tab -->
+        <div class="tab-pane fade" id="books" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-book me-2"></i>Books Management
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if all_books %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Category</th>
+                                    <th>Uploaded By</th>
+                                    <th>Downloads</th>
+                                    <th>Upload Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for book in all_books %}
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-file-pdf text-danger me-2"></i>
+                                        {{ book.title }}
+                                    </td>
+                                    <td>{{ book.author }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ book.category }}</span>
+                                    </td>
+                                    <td>
+                                        {% set uploader = all_users|selectattr('id', 'equalto', book.uploaded_by)|first %}
+                                        {{ uploader.username if uploader else 'Unknown' }}
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-download me-1"></i>{{ book.downloads }}
+                                    </td>
+                                    <td>{{ book.uploaded_at.strftime('%b %d, %Y') }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('download', book_id=book.id) }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                            <a href="{{ url_for('delete_book', book_id=book.id) }}" 
+                                               class="btn btn-sm btn-outline-danger"
+                                               onclick="return confirm('Are you sure you want to delete {{ book.title }}?')">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No books uploaded yet</h5>
+                        <p class="text-muted">Books will appear here once authors start uploading content.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,202 @@
+:root {
+    --primary: #F58F7C;
+    --primary-light: #F2C4CE;
+    --gray-dark-1: #2C2B30;
+    --gray-dark-2: #4F4F51;
+    --gray-light: #D6D6D6;
+    --danger: #dc3545;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(120deg, var(--gray-dark-1) 0%, var(--gray-dark-2) 100%);
+    min-height: 100vh;
+}
+
+.navbar {
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    border-radius: 0 0 1rem 1rem;
+    background: linear-gradient(90deg, var(--gray-dark-1) 0%, var(--gray-dark-2) 100%);
+}
+.navbar-brand {
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    color: var(--primary) !important;
+}
+
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    border: none;
+    background: rgba(44, 43, 48, 0.97);
+}
+.card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(245, 143, 124, 0.25);
+}
+
+.book-card {
+    min-height: 300px;
+}
+
+.fa-file-pdf {
+    color: var(--danger) !important;
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.alert {
+    border-left: 4px solid;
+    border-radius: 0.375rem;
+}
+.alert-info { border-left-color: var(--primary-light); }
+.alert-success { border-left-color: var(--primary); }
+.alert-warning { border-left-color: #ffb74d; }
+.alert-danger { border-left-color: var(--danger); }
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(245, 143, 124, 0.35);
+}
+
+.btn, .btn-lg, .btn-outline-primary {
+    border-radius: 2rem;
+    font-size: 1.1rem;
+    padding: 0.7rem 2rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(245, 143, 124, 0.25);
+    transition: all 0.2s;
+}
+
+.btn-primary, .btn-outline-primary {
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+    border: none;
+    color: #fff;
+}
+
+.btn-primary:hover, .btn-outline-primary:hover {
+    background: linear-gradient(90deg, var(--primary-light) 0%, var(--primary) 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 16px rgba(245, 143, 124, 0.35);
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--gray-light);
+}
+
+.stats-card {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: #fff;
+    border: none;
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 12px rgba(245, 143, 124, 0.22);
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes counter {
+    0% { opacity: 0; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+}
+.stats-card h3 {
+    animation: counter 0.8s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+}
+
+.features-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-light);
+    transition: color 0.2s;
+}
+.features-icon:hover {
+    color: var(--primary);
+}
+
+.search-section {
+    background-color: var(--gray-light);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.btn-group .btn.active {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.list-group-item {
+    transition: background-color 0.15s ease-in-out;
+}
+
+.list-group-item:hover {
+    background-color: var(--gray-light);
+}
+
+footer {
+    margin-top: auto;
+    border-radius: 1rem 1rem 0 0;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.12);
+    background: linear-gradient(90deg, var(--gray-dark-1) 0%, var(--gray-dark-2) 100%);
+    color: var(--primary-light);
+    font-size: 1.1rem;
+}
+
+.form-control[type="file"] {
+    padding: 0.375rem 0.75rem;
+}
+
+.py-section {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+@media (max-width: 768px) {
+    .display-4 { font-size: 2rem; }
+    .lead { font-size: 1rem; }
+    .btn-lg { font-size: 1rem; padding: 0.5rem 1rem; }
+}
+
+[data-bs-theme="dark"] .card:hover {
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+[data-bs-theme="dark"] .table-hover tbody tr:hover {
+    background-color: var(--gray-dark-2);
+}
+
+[data-bs-theme="dark"] .search-section {
+    background-color: var(--gray-dark-2);
+}
+
+[data-bs-theme="dark"] .list-group-item:hover {
+    background-color: var(--gray-dark-2);
+}
+
+.fas, .far {
+    vertical-align: middle;
+}
+
+.btn.loading {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--gray-dark-1);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-light);
+}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Upload eBook - KitabGhar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3>
+                        <i class="fas fa-upload me-2"></i>Upload eBook
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">
+                                <i class="fas fa-book me-1"></i>Title *
+                            </label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="author" class="form-label">
+                                <i class="fas fa-user me-1"></i>Author *
+                            </label>
+                            <input type="text" class="form-control" id="author" name="author" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="category" class="form-label">
+                                <i class="fas fa-tag me-1"></i>Category *
+                            </label>
+                            <input type="text" class="form-control" id="category" name="category" 
+                                   list="categoryList" required>
+                            <datalist id="categoryList">
+                                {% for category in categories %}
+                                <option value="{{ category }}">
+                                {% endfor %}
+                                <option value="Fiction">
+                                <option value="Non-Fiction">
+                                <option value="Science">
+                                <option value="Technology">
+                                <option value="History">
+                                <option value="Biography">
+                                <option value="Educational">
+                                <option value="Reference">
+                            </datalist>
+                            <div class="form-text">
+                                Start typing to see suggestions or enter a new category
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                <i class="fas fa-align-left me-1"></i>Description *
+                            </label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="4" required placeholder="Enter book description..."></textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="file" class="form-label">
+                                <i class="fas fa-file-pdf me-1"></i>PDF File *
+                            </label>
+                            <input type="file" class="form-control" id="file" name="file" 
+                                   accept=".pdf" required>
+                            <div class="form-text">
+                                Only PDF files are allowed. Maximum file size: 16MB
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload me-2"></i>Upload eBook
+                            </button>
+                            <a href="{{ url_for('browse') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Browse
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Upload Guidelines -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle me-1"></i>Upload Guidelines
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li>Only PDF files are accepted</li>
+                        <li>Maximum file size is 16MB</li>
+                        <li>Ensure you have the rights to upload the content</li>
+                        <li>Provide accurate metadata for better discoverability</li>
+                        <li>Use clear, descriptive titles and descriptions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('file').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const maxSize = 16 * 1024 * 1024; // 16MB
+        if (file.size > maxSize) {
+            alert('File size exceeds 16MB limit. Please choose a smaller file.');
+            e.target.value = '';
+        }
+    }
+});
+</script>
+{% endblock %}
